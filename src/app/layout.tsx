@@ -3,11 +3,12 @@ import { Space_Grotesk } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css";
 import Navbar from "@/components/navbar";
+import { Toaster } from "@/components/ui/sonner"
 
 const SpaceGrotesk = Space_Grotesk({ subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
-  title: "FlowUI",
+  title: "Thunder UI",
   description: "Modern React Component Generator",
 };
 
@@ -27,6 +28,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+            <Toaster />
             <Navbar />
             {children}
           </ThemeProvider>

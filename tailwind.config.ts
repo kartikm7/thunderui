@@ -63,41 +63,69 @@ const config: Config = {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
-  			}
+  			},
+  			'color-1': 'hsl(var(--color-1))',
+  			'color-2': 'hsl(var(--color-2))',
+  			'color-3': 'hsl(var(--color-3))',
+  			'color-4': 'hsl(var(--color-4))',
+  			'color-5': 'hsl(var(--color-5))'
   		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
   		},
-			animation: {
-				shimmer: "shimmer 8s infinite",
-				grid: "grid 15s linear infinite",
-				moveUp: 'moveUp 1.4s ease forwards',
-        appear: 'appear 1s 1s forwards'
-      },
-      keyframes: {
-        shimmer: {
-          "0%, 90%, 100%": {
-            "background-position": "calc(-100% - var(--shimmer-width)) 0",
-          },
-          "30%, 60%": {
-            "background-position": "calc(100% + var(--shimmer-width)) 0",
-          },
-        },
-        grid: {
-          "0%": { transform: "translateY(-50%)" },
-          "100%": { transform: "translateY(0)" },
-        },
-				moveUp: {
-          '0%': { transform: 'translateY(5%)', opacity: '0' },
-          '100%': { transform: 'translateY(0%)', opacity: '1' }
-        },
-        appear: {
-          from: { opacity: '0' },
-          to: { opacity: '1' }
-        },
-      },
+  		animation: {
+  			shimmer: 'shimmer 8s infinite',
+  			grid: 'grid 15s linear infinite',
+  			moveUp: 'moveUp 1.4s ease forwards',
+  			appear: 'appear 1s 1s forwards',
+  			rainbow: 'rainbow var(--speed, 2s) infinite linear'
+  		},
+  		keyframes: {
+  			shimmer: {
+  				'0%, 90%, 100%': {
+  					'background-position': 'calc(-100% - var(--shimmer-width)) 0'
+  				},
+  				'30%, 60%': {
+  					'background-position': 'calc(100% + var(--shimmer-width)) 0'
+  				}
+  			},
+  			grid: {
+  				'0%': {
+  					transform: 'translateY(-50%)'
+  				},
+  				'100%': {
+  					transform: 'translateY(0)'
+  				}
+  			},
+  			moveUp: {
+  				'0%': {
+  					transform: 'translateY(5%)',
+  					opacity: '0'
+  				},
+  				'100%': {
+  					transform: 'translateY(0%)',
+  					opacity: '1'
+  				}
+  			},
+  			appear: {
+  				from: {
+  					opacity: '0'
+  				},
+  				to: {
+  					opacity: '1'
+  				}
+  			},
+  			rainbow: {
+  				'0%': {
+  					'background-position': '0%'
+  				},
+  				'100%': {
+  					'background-position': '200%'
+  				}
+  			}
+  		}
   	}
   },
   plugins: [require("tailwindcss-animate"),

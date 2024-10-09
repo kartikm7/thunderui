@@ -1,4 +1,5 @@
 "use client"
+import { toast } from "sonner";
 import { PlaceholdersAndVanishInput } from "../ui/placeholders-and-vanish-input";
 
 export default function VanishInput() {
@@ -28,8 +29,8 @@ export default function VanishInput() {
     console.log(e.target.value);
   };
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    toast.success(`Haven't figured how to pass the input to the generate route!`)
     e.preventDefault();
-    console.log("submitted");
   };
   return (
       <PlaceholdersAndVanishInput

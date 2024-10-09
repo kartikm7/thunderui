@@ -124,7 +124,7 @@ export default function GeneratePage() {
   // },[generatedResponse])
 
   return (
-    <div className="relative w-full h-screen flex flex-col justify-center items-center gap-10 ">
+    <div className="relative w-full h-screen flex flex-col justify-center items-center gap-4 ">
       <BrowserComponent codePreview={codePreview} setCodePreview={setCodePreview} url="thunderui.in/generate" className="size-3/4">
         { generatedResponse ? <LiveProvider code={generatedResponse} noInline={true}>
           <LiveError />
