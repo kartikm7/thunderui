@@ -9,10 +9,10 @@ export default function Navbar() {
   return (
     <>
       <div className="fixed z-10 w-full flex justify-between items-center p-5">
-        <Link href={'/'} className="">
-        <div className="flex items-center gap-1 !cursor-pointer">
+        <Link href={'/'} className="cursor-pointer">
+        <div className="flex items-center gap-1">
           <LightningBoltIcon />
-          <HyperText text="Thunder UI" />
+          <HyperText className="cursor-pointer" text="Thunder UI" />
         </div>
         </Link>
         <div className="flex items-center gap-4">

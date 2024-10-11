@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css";
 import Navbar from "@/components/navbar";
 import { Toaster } from "@/components/ui/sonner"
+import Footer from "@/components/footer";
 
 const SpaceGrotesk = Space_Grotesk({ subsets: ["latin"], display: "swap" });
 
@@ -33,6 +34,9 @@ export default function RootLayout({
             {children}
           </ThemeProvider>
       </body>
+      <footer>
+        <Footer />
+      </footer>
     </html>
   );
 }
