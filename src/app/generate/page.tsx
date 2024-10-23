@@ -131,7 +131,7 @@ export default function GeneratePage() {
           {codePreview ? <LiveEditor /> : <LivePreview /> }
         </LiveProvider> : 'Nothing to preview.'}
       </BrowserComponent>
-      <PlaceholdersAndVanishInput placeholders={placeholder} onSubmit={onSubmit} onChange={handleChange} />
+      <PlaceholdersAndVanishInput className="" placeholders={placeholder} onSubmit={onSubmit} onChange={handleChange} />
     </div>
   );
 }

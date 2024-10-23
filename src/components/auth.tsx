@@ -34,7 +34,7 @@ export default async function Auth() {
               <h1>{user.name?.charAt(0)}</h1>
             )}
           </div>
-          <h1>{user.name}</h1>
+          <h1 className="hidden lg:block">{user.name}</h1>
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="p-4 space-y-2">
