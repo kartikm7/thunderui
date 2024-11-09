@@ -80,7 +80,9 @@ const config: Config = {
   			grid: 'grid 15s linear infinite',
   			moveUp: 'moveUp 1.4s ease forwards',
   			appear: 'appear 1s 1s forwards',
-  			rainbow: 'rainbow var(--speed, 2s) infinite linear'
+  			rainbow: 'rainbow var(--speed, 2s) infinite linear',
+  			'border-beam': 'border-beam calc(var(--duration)*1s) infinite linear',
+  			'shiny-text': 'shiny-text 8s infinite'
   		},
   		keyframes: {
   			shimmer: {
@@ -123,6 +125,19 @@ const config: Config = {
   				},
   				'100%': {
   					'background-position': '200%'
+  				}
+  			},
+  			'border-beam': {
+  				'100%': {
+  					'offset-distance': '100%'
+  				}
+  			},
+  			'shiny-text': {
+  				'0%, 90%, 100%': {
+  					'background-position': 'calc(-100% - var(--shiny-width)) 0'
+  				},
+  				'30%, 60%': {
+  					'background-position': 'calc(100% + var(--shiny-width)) 0'
   				}
   			}
   		}

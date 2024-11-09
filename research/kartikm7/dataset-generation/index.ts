@@ -3,7 +3,7 @@ import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
 import dataset from "./dataset.json" assert {type: "json"}
 import { DataEntry } from "./types/types";
 import cliProgress from "cli-progress";
-import { createWriteStream, existsSync } from "fs"
+import { appendFileSync, createWriteStream, existsSync } from "fs"
 
 // giving access to the api key
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API || "");
@@ -135,25 +135,44 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 progressBar.start(499, 0)
 
-const writeStream = createWriteStream('augmented-dataset.json', { flags: 'a' })
-if(!existsSync('augmented-dataset.json')){
-  writeStream.write('[')
+const outputFile = "augmented-dataset.json";
+const writeStream = createWriteStream(outputFile, { flags: "a" });
+
+if (!existsSync(outputFile)) {
+  appendFileSync(outputFile, "[\n");
 }
 
-for (let i = 98; i < index+500; i++) {
-  if(i == data.length-1) break;
-  const entry = data[i]
-  // calling the model
-  let result = await model.generateContent(
-    entry.content,
-  );
-  if(!safeParseJSON(JSON.stringify(result))) continue
-  result = JSON.parse(result.response.text())
-  const writeStream = createWriteStream('augmented-dataset.json', { flags: 'a' })
-  writeStream.write(JSON.stringify(result) + ', \n')
-  progressBar.increment()
-  await sleep(4000)
+// Progress bar setup
+progressBar.start(500, 0);
+
+// Loop through dataset entries and generate content
+for (let i = 98; i < index + 500 && i < data.length; i++) {
+  const entry = data[i];
+
+  try {
+    const result = await model.generateContent(entry.content);
+    const parsedResult = safeParseJSON(result.response.text());
+
+    if (!parsedResult) continue; // Skip invalid JSON entries
+
+    const jsonString = JSON.stringify(parsedResult, null, 2);
+
+    // Write JSON string to the file, omitting trailing comma on the last entry
+    writeStream.write(jsonString);
+    if (i < index + 500 - 1 && i < data.length - 1) {
+      writeStream.write(",\n"); // Add comma only if it's not the last entry
+    }
+
+    progressBar.increment();
+    await new Promise((resolve) => setTimeout(resolve, 4000)); // Rate limit
+  } catch (error) {
+    console.error("Error generating content:", error);
+  }
 }
-writeStream.write(']')
-writeStream.close()
-progressBar.stop()
+
+// Close the JSON array and write stream
+appendFileSync(outputFile, "\n]");
+writeStream.end();
+progressBar.stop();
+
+console.log("Dataset augmentation completed successfully.");

@@ -5,6 +5,7 @@ import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-van
 import { ChatGroq } from "@langchain/groq";
 import React, { useState } from "react";
 import { LiveProvider, LiveError, LivePreview, LiveEditor } from "react-live";
+import * from 
 
 const placeholder = [
   "Responsive navbar with dropdowns.",
@@ -194,7 +195,7 @@ export default function GeneratePage() {
           {codePreview ? <LiveEditor /> : <LivePreview /> }
         </LiveProvider> : 'Nothing to preview.'}
       </BrowserComponent>
-      <PlaceholdersAndVanishInput className="" placeholders={placeholder} onSubmit={onSubmit} onChange={handleChange} />
+      <PlaceholdersAndVanishInput placeholders={placeholder} onSubmit={onSubmit} onChange={handleChange} />
     </div>
   );
 }
