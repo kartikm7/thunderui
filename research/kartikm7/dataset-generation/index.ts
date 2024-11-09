@@ -141,7 +141,7 @@ for (let i = index; i < index+500; i++) {
   const writeStream = createWriteStream('augmented-dataset.json', { flags: 'a' })
   writeStream.write(JSON.stringify(result) + ', \n')
   progressBar.increment()
-  sleep(2500)
+  await sleep(2500)
 }
 writeStream.write(']')
 writeStream.close()
