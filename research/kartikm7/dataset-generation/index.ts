@@ -119,7 +119,10 @@ const model = genAI.getGenerativeModel({
 const data = dataset as DataEntry[]
 
 // where the loop starts from
-let index = 0;
+let index = 500;
+
+// sleep function to not hit the rate limit
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 progressBar.start(499, 0)
@@ -138,6 +141,7 @@ for (let i = index; i < index+500; i++) {
   const writeStream = createWriteStream('augmented-dataset.json', { flags: 'a' })
   writeStream.write(JSON.stringify(result) + ', \n')
   progressBar.increment()
+  sleep(2500)
 }
 writeStream.write(']')
 writeStream.close()
