@@ -1,59 +1,44 @@
-import { ChatGroq } from "@langchain/groq";
-import { DataEntry } from "./types/types";
-import z from "zod"
-import 'dotenv/config'
+import "dotenv/config"
+import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
 import dataset from "./dataset.json" assert {type: "json"}
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { DataEntry } from "./types/types";
+// giving access to the api key
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API || "");
 
-// dataset
-const data = dataset as DataEntry[]
-
-// defining the llm
-
-// groq llm
-// const llm = new ChatGroq({
-//   model: "llama-3.1-8b-instant",
-//   apiKey: process.env.GROQ_API,
-//   maxRetries: 2
-// });
-
-const llm = new ChatGoogleGenerativeAI({
-  model: "gemini-1.5-flash",
-  apiKey: process.env.GEMINI_API
-})
-const structure = z.object({
-  prompt: z.string().describe("A prompt that a user would send to an LLM to generate the code"),
-  code: z.string().describe("React code using MagicUI components"),
-});
-
-const structuredLLM = llm.withStructuredOutput(structure, {method: "json_mode", name: "enhanced_code"})
-
+// chosen components array with description
 const chosenComponents = [
   `RainbowButton:
+  - Import: import { RainbowButton } from "@/components/magicui/rainbow-button";
   - children: Content inside the button.
   - className: Optional Tailwind CSS class (e.g., "bg-blue-500 text-white").
   
   Example:
+  import { RainbowButton } from "@/components/magicui/rainbow-button";
   <RainbowButton className="text-center">Get Unlimited Access</RainbowButton>`,
 
   `AnimatedShinyText:
+  - Import: import AnimatedShinyText from "@/components/magicui/animated-shiny-text";
   - children: Text to be shimmered.
   - className: Optional Tailwind CSS class (e.g., "text-center").
   - shimmerWidth: Width of the shimmer (default: 100).
   
   Example:
+  import AnimatedShinyText from "@/components/magicui/animated-shiny-text";
   <AnimatedShinyText className="text-center">Shiny Text</AnimatedShinyText>`,
 
   `WordFadeIn:
+  - Import: import WordFadeIn from "@/components/magicui/word-fade-in";
   - className: Optional Tailwind CSS class (e.g., "text-xl font-bold").
   - delay: Delay between each word animation (default: 0.15).
   - words: Text animated word by word (default: "word fade in").
   - variants: Framer-motion animation props.
   
   Example:
+  import WordFadeIn from "@/components/magicui/word-fade-in";
   <WordFadeIn words="Word Fade In" />`,
 
   `BorderBeam:
+  - Import: import { BorderBeam } from "@/components/magicui/border-beam.tsx";
   - className: Optional Tailwind CSS class (e.g., "border-2").
   - size: Size of the beam (default: 300).
   - duration: Duration of the animation (default: 15).
@@ -64,11 +49,13 @@ const chosenComponents = [
   - delay: Delay before animation starts (default: 0).
   
   Example:
+  import { BorderBeam } from "@/components/magicui/border-beam.tsx";
   <div className="relative h-[200px] w-[200px] rounded-xl">
     <BorderBeam />
   </div>`,
 
   `AnimatedGridPattern:
+  - Import: import AnimatedGridPattern from "@/components/magicui/animated-grid-pattern";
   - className: Optional Tailwind CSS class (e.g., "inset-x-0 inset-y-[-30%]").
   - width: Width of the pattern (default: 40).
   - height: Height of the pattern (default: 40).
@@ -81,26 +68,55 @@ const chosenComponents = [
   - repeatDelay: Repeat delay (default: 0.5).
   
   Example:
+  import AnimatedGridPattern from "@/components/magicui/animated-grid-pattern";
   <div className="relative flex h-[500px] w-full items-center justify-center overflow-hidden rounded-lg border bg-background p-20 md:shadow-xl">
     <p className="z-10 text-center text-5xl font-medium text-black dark:text-white">Animated Grid Pattern</p>
     <AnimatedGridPattern numSquares={30} maxOpacity={0.1} duration={3} repeatDelay={1} />
   </div>`
 ];
 
-// sending ai message
-const response = await structuredLLM.invoke([
-  {
-    role: "system",
-      content:
-        `You are a helpful assistant that enhances given code by using the following React components from Magic UI (make sure you update the imports aswell): \n
-        ${chosenComponents.toString()}
-        \n \n
-        ---
-        \n \n
-        and also devices a prompt that describes what the user meant to say to you.`,
+
+// schema of expected output
+const schema = {
+  description: "Enhanced React Code",
+  type: SchemaType.OBJECT,
+  properties: {
+    propmt: {
+      type: SchemaType.STRING,
+      description: "Generate a prompt that clearly instructs the LLM to create code from scratch, without EVER referring to prior versions or enhancements. The prompt should focus on the creation of a new element, like 'Generate a Landing Page using XYZ,' instead of suggesting modifications/enhancements to an existing component.",
+      nullable: false
     },
-  { role: "user", content: data[0].content },
-]);
+    code: {
+      type: SchemaType.STRING,
+      description: "React code using MagicUI components",
+      nullable: false
+    },
+  },
+};
+
+const systemPrompt =  `You are a helpful assistant that enhances given code by using the following React components from Magic UI (make sure you update the imports as well): \n
+${chosenComponents.toString()}
+\n \n
+---
+\n \n
+and also devises a prompt that describes what the user meant to say to you.`
 
 
-console.log(response);
+// defining the gemini model w/ json mode and system prompt
+const model = genAI.getGenerativeModel({
+  model: "gemini-1.5-flash",
+  systemInstruction: systemPrompt,
+  generationConfig: {
+    responseMimeType: "application/json",
+    responseSchema: schema,
+  },
+});
+
+// loading the dataset
+const data = dataset as DataEntry[]
+
+// calling the model
+const result = await model.generateContent(
+  data[0].content,
+);
+console.log(JSON.parse(result.response.text()));
