@@ -1,11 +1,67 @@
 "use client";
-
 import { BrowserComponent } from "@/components/ui/browser-mock";
 import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input";
 import { ChatGroq } from "@langchain/groq";
 import React, { useState } from "react";
 import { LiveProvider, LiveError, LivePreview, LiveEditor } from "react-live";
-import * from 
+import AnimatedGridPattern from "@/components/ui/animated-grid-pattern";
+import AnimatedShinyPattern from "@/components/ui/animated-shiny-text";
+import { BorderBeam } from "@/components/ui/border-beam";
+import { RainbowButton } from "@/components/ui/rainbow-button";
+import WordFadeIn from "@/components/ui/word-fade-in";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import z from "zod";
+import { Separator } from "@/components/ui/separator"
+import { Textarea } from "@/components/ui/textarea";
+
+const scope = {
+  RainbowButton,
+  AnimatedGridPattern,
+  AnimatedShinyPattern,
+  BorderBeam,
+  WordFadeIn,
+  Button,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+  Input,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  Separator,
+  Textarea
+};
 
 const placeholder = [
   "Responsive navbar with dropdowns.",
@@ -27,12 +83,12 @@ const placeholder = [
   "Timeline with dates and events.",
   "Responsive photo grid layout.",
   "Dropdown menu with subcategories.",
-  "Dashboard with stats and graphs."
+  "Dashboard with stats and graphs.",
 ];
 
 const schema = {
   component: "react component based on the users prompt",
-}
+};
 
 const examples = [
   {
@@ -45,7 +101,7 @@ const examples = [
 }
 
 // This line is necessary for react-live to render the component
-render(<SimpleGreeting />);`
+render(<SimpleGreeting />);`,
   },
   {
     component: `function CounterButton() {
@@ -61,7 +117,7 @@ render(<SimpleGreeting />);`
   );
 }
 
-render(<CounterButton />);`
+render(<CounterButton />);`,
   },
   {
     component: `function UserProfile({ name, email, avatar }) {
@@ -82,120 +138,146 @@ render(
     email="john@example.com"
     avatar="https://placekitten.com/100/100"
   />
-);`
-  }
-];
-
-// chosen components array with description
-const chosenComponents = [
-  `RainbowButton:
-  - children: Content inside the button.
-  - className: Optional Tailwind CSS class (e.g., "bg-blue-500 text-white").
-  
-  Example:
-  <RainbowButton className="text-center">Get Unlimited Access</RainbowButton>`,
-
-  `AnimatedShinyText:
-  - Import: import AnimatedShinyText from "@/components/magicui/animated-shiny-text";
-  - children: Text to be shimmered.
-  - className: Optional Tailwind CSS class (e.g., "text-center").
-  - shimmerWidth: Width of the shimmer (default: 100).
-  
-  Example:
-  <AnimatedShinyText className="text-center">Shiny Text</AnimatedShinyText>`,
-
-  `WordFadeIn:
-  - className: Optional Tailwind CSS class (e.g., "text-xl font-bold").
-  - delay: Delay between each word animation (default: 0.15).
-  - words: Text animated word by word (default: "word fade in").
-  - variants: Framer-motion animation props.
-  
-  Example:
-  <WordFadeIn words="Word Fade In" />`,
-
-  `BorderBeam:
-  - className: Optional Tailwind CSS class (e.g., "border-2").
-  - size: Size of the beam (default: 300).
-  - duration: Duration of the animation (default: 15).
-  - anchor: Anchor point of the beam (default: 90).
-  - borderWidth: Width of the beam (default: 1.5).
-  - colorFrom: Start color of the beam (default: #ffaa40).
-  - colorTo: End color of the beam (default: #9c40ff).
-  - delay: Delay before animation starts (default: 0).
-  
-  Example:
-  import { BorderBeam } from "@/components/magicui/border-beam.tsx";
-  <div className="relative h-[200px] w-[200px] rounded-xl">
-    <BorderBeam />
-  </div>`,
-
-  `AnimatedGridPattern:
-  - className: Optional Tailwind CSS class (e.g., "inset-x-0 inset-y-[-30%]").
-  - width: Width of the pattern (default: 40).
-  - height: Height of the pattern (default: 40).
-  - x: X offset of the pattern (default: -1).
-  - y: Y offset of the pattern (default: -1).
-  - strokeDasharray: Stroke dash array (default: 0).
-  - numSquares: Number of squares (default: 200).
-  - maxOpacity: Maximum opacity (default: 0.5).
-  - duration: Duration of the animation (default: 1).
-  - repeatDelay: Repeat delay (default: 0.5).
-  
-  Example:
-  import AnimatedGridPattern from "@/components/magicui/animated-grid-pattern";
-  <div className="relative flex h-[500px] w-full items-center justify-center overflow-hidden rounded-lg border bg-background p-20 md:shadow-xl">
-    <p className="z-10 text-center text-5xl font-medium text-black dark:text-white">Animated Grid Pattern</p>
-    <AnimatedGridPattern numSquares={30} maxOpacity={0.1} duration={3} repeatDelay={1} />
-  </div>`
+);`,
+  },
 ];
 
 const systemPrompt = `
-You are a helpful AI assistant, you need to output react code along with tailwind css, use the following colour classes
-(bg-foreground text-background dark:bg-foreground dark:text-foreground)
-(you do not have access to any external components or libraries) \n strictly follow the following output schema: \n ${JSON.stringify(schema)} \n
-some output examples: \n ${JSON.stringify(examples)}
-`
+You are a helpful AI assistant that generates React components using Tailwind CSS and custom components.
+
+Available custom components that are already imported and ready to use, YOU NEED TO USE these:
+
+1. Button
+   Usage: <Button variant="outline">Button</Button>
+
+2. RainbowButton
+   Usage: <RainbowButton className="...">Button Text</RainbowButton>
+
+3. WordFadeIn
+   Usage: <WordFadeIn words="Text to fade in" className="..." />
+
+4. BorderBeam
+   Usage: <div className="relative h-[200px] w-[200px] rounded-xl"><BorderBeam /></div>
+
+5. AnimatedGridPattern
+   Usage: <div className="relative"><AnimatedGridPattern numSquares={30} maxOpacity={0.1} /></div>
+
+6. Accordion
+   Usage: 
+   <Accordion type="single" collapsible>
+      <AccordionItem value="item-1">
+         <AccordionTrigger>Is it accessible?</AccordionTrigger>
+         <AccordionContent>
+            Yes. It adheres to the WAI-ARIA design pattern.
+         </AccordionContent>
+      </AccordionItem>
+   </Accordion>
+
+7. Input
+   Usage: <Input />
+
+8. AnimatedShinyPattern
+   Usage: <AnimatedShinyPattern>Text to animate</AnimatedShinyPattern>
+
+9. DropdownMenu
+   Usage: 
+   <DropdownMenu>
+      <DropdownMenuTrigger>Open</DropdownMenuTrigger>
+      <DropdownMenuContent>
+         <DropdownMenuLabel>My Account</DropdownMenuLabel>
+         <DropdownMenuSeparator />
+         <DropdownMenuItem>Profile</DropdownMenuItem>
+         <DropdownMenuItem>Billing</DropdownMenuItem>
+         <DropdownMenuItem>Team</DropdownMenuItem>
+         <DropdownMenuItem>Subscription</DropdownMenuItem>
+      </DropdownMenuContent>
+   </DropdownMenu>
+
+10. Select
+    Usage: 
+    <Select>
+       <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="Theme" />
+       </SelectTrigger>
+       <SelectContent>
+          <SelectItem value="light">Light</SelectItem>
+          <SelectItem value="dark">Dark</SelectItem>
+          <SelectItem value="system">System</SelectItem>
+       </SelectContent>
+    </Select>
+
+  11. Separator
+      Usage:
+      <Separator />
+  12. Text Area
+      Usage:
+      <Textarea />
+
+Important instructions:
+- DO NOT include any imports - all components are already imported
+- Use Tailwind CSS for styling
+- Prefer using the custom components when appropriate
+- Components should be responsive
+- Follow dark mode conventions using the "dark:" class
+- Output must follow this schema: ${JSON.stringify(schema)}
+- Add appropriate gaps and spacing ALWAYS  
+
+ALSO MAKE SURE YOU ADD the render(<ComponentName/>) to preview the component
+Here are some examples of valid components:
+${JSON.stringify(examples, null, 2)}
+`;
 
 export default function GeneratePage() {
   const [generatedResponse, setGeneratedResponse] = useState(``);
-  const [prompt, setPrompt] = useState('')
-  const [codePreview, setCodePreview] = useState(false)
+  const [prompt, setPrompt] = useState("");
+  const [codePreview, setCodePreview] = useState(false);
   const llm = new ChatGroq({
     model: "llama-3.1-8b-instant",
     apiKey: process.env.NEXT_PUBLIC_GROQ_API,
   });
-  
+  const structure = z.object({
+    component: z.string().describe("React code with render for live preview"),
+  });
+  const structuredLLM = llm.withStructuredOutput(structure);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPrompt(e.target.value);
   };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const response = await llm.invoke([
-      [
-        "system",
-        systemPrompt,
-      ],
+    const response = await structuredLLM.invoke([
+      ["system", systemPrompt],
       ["human", prompt],
-    ])
-    const res = JSON.parse(`${response.content}`)
-    console.log(res)
-    if(res.component) setGeneratedResponse(res.component)
-    else setGeneratedResponse('')
+    ]);
+    if (response.component) setGeneratedResponse(response.component);
+    else setGeneratedResponse("");
   };
 
   // useEffect(()=>{c
   // },[generatedResponse])
 
   return (
-    <div className="relative w-full h-screen flex flex-col justify-center items-center gap-4 ">
-      <BrowserComponent codePreview={codePreview} setCodePreview={setCodePreview} url="thunderui.in/generate" className="size-3/4">
-        { generatedResponse ? <LiveProvider code={generatedResponse} noInline={true}>
-          <LiveError />
-          {codePreview ? <LiveEditor /> : <LivePreview /> }
-        </LiveProvider> : 'Nothing to preview.'}
+    <div className="relative flex h-screen w-full flex-col items-center justify-center gap-4">
+      <BrowserComponent
+        codePreview={codePreview}
+        setCodePreview={setCodePreview}
+        url="thunderui.in/generate"
+        className="size-3/4 overflow-scroll"
+      >
+        {generatedResponse ? (
+          <LiveProvider scope={scope} code={generatedResponse} noInline={true}>
+            <LiveError />
+            {codePreview ? <LiveEditor className="overflow-scroll" /> : <LivePreview />}
+          </LiveProvider>
+        ) : (
+          "Nothing to preview."
+        )}
       </BrowserComponent>
-      <PlaceholdersAndVanishInput placeholders={placeholder} onSubmit={onSubmit} onChange={handleChange} />
+      <PlaceholdersAndVanishInput
+        placeholders={placeholder}
+        onSubmit={onSubmit}
+        onChange={handleChange}
+      />
     </div>
   );
 }
