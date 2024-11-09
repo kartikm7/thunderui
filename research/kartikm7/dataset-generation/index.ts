@@ -3,7 +3,7 @@ import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
 import dataset from "./dataset.json" assert {type: "json"}
 import { DataEntry } from "./types/types";
 import cliProgress from "cli-progress";
-import { createWriteStream } from "fs"
+import { createWriteStream, existsSync } from "fs"
 
 // giving access to the api key
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API || "");
@@ -78,6 +78,14 @@ const chosenComponents = [
   </div>`
 ];
 
+function safeParseJSON(jsonString:string) {
+  try {
+    return JSON.parse(jsonString);
+  } catch (error) {
+    console.error("Skipping invalid JSON entry due to syntax error");
+    return null; // Return null if JSON is invalid
+  }
+}
 
 // schema of expected output
 const schema = {
@@ -127,21 +135,24 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 progressBar.start(499, 0)
 
-const writeStream = createWriteStream('augmented-dataset.json', { flags: 'a' })
-writeStream.write('[')
+if(!existsSync('augmented-dataset.json')){
+  const writeStream = createWriteStream('augmented-dataset.json', { flags: 'a' })
+  writeStream.write('[')
+}
 
-for (let i = index; i < index+500; i++) {
+for (let i = 98; i < index+500; i++) {
   if(i == data.length-1) break;
   const entry = data[i]
   // calling the model
   let result = await model.generateContent(
     entry.content,
   );
+  if(!safeParseJSON(JSON.stringify(result))) continue
   result = JSON.parse(result.response.text())
   const writeStream = createWriteStream('augmented-dataset.json', { flags: 'a' })
   writeStream.write(JSON.stringify(result) + ', \n')
   progressBar.increment()
-  await sleep(2500)
+  await sleep(4000)
 }
 writeStream.write(']')
 writeStream.close()
