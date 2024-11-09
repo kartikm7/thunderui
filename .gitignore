@@ -8,7 +8,7 @@
 *.yarn/install-state.gz
 *dist
 *debug.log
-
+*.env
 
 # testing
 /client/coverage
