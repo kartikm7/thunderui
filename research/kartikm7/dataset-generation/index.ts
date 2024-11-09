@@ -2,6 +2,9 @@ import "dotenv/config"
 import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
 import dataset from "./dataset.json" assert {type: "json"}
 import { DataEntry } from "./types/types";
+import cliProgress from "cli-progress";
+import { createWriteStream } from "fs"
+
 // giving access to the api key
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API || "");
 
@@ -81,12 +84,12 @@ const schema = {
   description: "Enhanced React Code",
   type: SchemaType.OBJECT,
   properties: {
-    propmt: {
+    prompt: {
       type: SchemaType.STRING,
       description: "Generate a prompt that clearly instructs the LLM to create code from scratch, without EVER referring to prior versions or enhancements. The prompt should focus on the creation of a new element, like 'Generate a Landing Page using XYZ,' instead of suggesting modifications/enhancements to an existing component.",
       nullable: false
     },
-    code: {
+    content: {
       type: SchemaType.STRING,
       description: "React code using MagicUI components",
       nullable: false
@@ -94,7 +97,7 @@ const schema = {
   },
 };
 
-const systemPrompt =  `You are a helpful assistant that enhances given code by using the following React components from Magic UI (make sure you update the imports as well): \n
+const systemPrompt = `You are a helpful assistant that enhances given code by using the following React components from Magic UI (make sure you update the imports as well): \n
 ${chosenComponents.toString()}
 \n \n
 ---
@@ -115,8 +118,25 @@ const model = genAI.getGenerativeModel({
 // loading the dataset
 const data = dataset as DataEntry[]
 
-// calling the model
-const result = await model.generateContent(
-  data[0].content,
-);
-console.log(JSON.parse(result.response.text()));
+let index = 0;
+
+const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+progressBar.start(499, 0)
+
+const writeStream = createWriteStream('augmented-dataset.json', { flags: 'a' })
+writeStream.write('[')
+
+for (let i = index; i < index + 500; i++) {
+  const entry = data[i]
+  // calling the model
+  let result = await model.generateContent(
+    entry.content,
+  );
+  result = JSON.parse(result.response.text())
+  const writeStream = createWriteStream('augmented-dataset.json', { flags: 'a' })
+  writeStream.write(JSON.stringify(result) + ', \n')
+  progressBar.increment()
+}
+writeStream.write(']')
+writeStream.close()
+progressBar.stop()
