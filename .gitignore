@@ -9,6 +9,7 @@
 *dist
 *debug.log
 *.env
+*dataset.json
 
 # testing
 /client/coverage
