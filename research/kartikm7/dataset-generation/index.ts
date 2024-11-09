@@ -135,8 +135,8 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 progressBar.start(499, 0)
 
+const writeStream = createWriteStream('augmented-dataset.json', { flags: 'a' })
 if(!existsSync('augmented-dataset.json')){
-  const writeStream = createWriteStream('augmented-dataset.json', { flags: 'a' })
   writeStream.write('[')
 }
 
