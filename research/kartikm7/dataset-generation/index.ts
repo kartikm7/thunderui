@@ -118,6 +118,7 @@ const model = genAI.getGenerativeModel({
 // loading the dataset
 const data = dataset as DataEntry[]
 
+// where the loop starts from
 let index = 0;
 
 const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
@@ -126,7 +127,8 @@ progressBar.start(499, 0)
 const writeStream = createWriteStream('augmented-dataset.json', { flags: 'a' })
 writeStream.write('[')
 
-for (let i = index; i < index + 500; i++) {
+for (let i = index; i < index+500; i++) {
+  if(i == data.length-1) break;
   const entry = data[i]
   // calling the model
   let result = await model.generateContent(
