@@ -2,6 +2,7 @@
 import { BrowserComponent } from "@/components/ui/browser-mock";
 import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input";
 import { ChatGroq } from "@langchain/groq";
+import { ChatXAI } from "@langchain/xai";
 import React, { useState } from "react";
 import { LiveProvider, LiveError, LivePreview, LiveEditor } from "react-live";
 import AnimatedGridPattern from "@/components/ui/animated-grid-pattern";
@@ -35,6 +36,7 @@ import {
 import z from "zod";
 import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const scope = {
   RainbowButton,
@@ -60,7 +62,9 @@ const scope = {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
   Separator,
-  Textarea
+  Textarea,
+  z,
+  zodResolver
 };
 
 const placeholder = [
@@ -222,6 +226,9 @@ Important instructions:
 - Output must follow this schema: ${JSON.stringify(schema)}
 - Add appropriate gaps and spacing ALWAYS  
 
+- USE ONLY the following classes:
+bg-foreground text-background antialiased dark:bg-foreground dark:text-foreground
+
 ALSO MAKE SURE YOU ADD the render(<ComponentName/>) to preview the component
 Here are some examples of valid components:
 ${JSON.stringify(examples, null, 2)}
@@ -231,8 +238,14 @@ export default function GeneratePage() {
   const [generatedResponse, setGeneratedResponse] = useState(``);
   const [prompt, setPrompt] = useState("");
   const [codePreview, setCodePreview] = useState(false);
+
+  // const llm = new ChatXAI({
+  //   model: "grok-beta",
+  //   apiKey: process.env.NEXT_PUBLIC_XAI_API
+  // })
+
   const llm = new ChatGroq({
-    model: "llama-3.1-8b-instant",
+    model: "llama-3.2-90b-text-preview",
     apiKey: process.env.NEXT_PUBLIC_GROQ_API,
   });
   const structure = z.object({
